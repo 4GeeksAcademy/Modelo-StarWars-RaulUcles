@@ -34,6 +34,12 @@ class Usuario(db.Model):
     planetas : Mapped[List["Planetas"]] = relationship(secondary="planetas_favoritos", back_populates="users")
     #Relación con Personajes
     personajes : Mapped[List["Personajes"]] = relationship(secondary="personajes_favoritos", back_populates="users")
+    def serialize(self):
+        return {
+            "email": self.email,
+            "nombre" :  self.nombre,
+            "apellido" : self.apellido
+        }
 
 class Planetas(db.Model):
     nombre: Mapped[str] = mapped_column(String(20), primary_key=True)
@@ -45,6 +51,13 @@ class Planetas(db.Model):
     users: Mapped[List["Usuario"]] = relationship(secondary="planetas_favoritos", back_populates="planetas")
     #Relacion 1-N con PERSONAJES
     personajes : Mapped[List["Personajes"]] = relationship(back_populates="planeta")
+    def serialize(self):
+        return {
+            "nombre" :  self.nombre,
+            "galaxia" : self.galaxia,
+            "numero_planetas" : self.numero_planetas,
+            "habitable" : self.habitable
+        }
 class Personajes(db.Model):
     nombre: Mapped[str] = mapped_column(String(20), primary_key=True)
     edad: Mapped[int] = mapped_column(nullable=False)
@@ -56,6 +69,12 @@ class Personajes(db.Model):
     planeta : Mapped["Planetas"] = relationship(back_populates="personajes")
     #Relacion 1-N con NAVES
     naves: Mapped[List["Naves"]] = relationship(back_populates="personaje")
+    def serialize(self):
+        return {
+            "nombre" :  self.nombre,
+            "edad" : self.edad,
+            "planeta_nombre" : self.planeta_nombre
+        }
 
 class Naves(db.Model):
     nombre: Mapped[str] = mapped_column(String(20), primary_key= True)
